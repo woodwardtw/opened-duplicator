@@ -32,8 +32,8 @@ function gform_site_cloner($entry, $form){
 	      'action'         => 'process',
 	      'clone_mode'     => 'core',
 	      'source_id'      => rgar( $entry, '1' ), //specific to the form entry fields and should resolve to the ID site to copy
-	      'target_name'    => rgar( $entry, '2' ), //specific to the form entry fields - need to parallel site url restrictions
-	      'target_title'   => rgar( $entry, '3' ), //specific to the form entry fields
+	      'target_name'    => rgar( $entry, '3' ), //specific to the form entry fields - need to parallel site url restrictions URL/DOMAIN
+	      'target_title'   => rgar( $entry, '2' ), //specific to the form entry fields TITLE
 	      'disable_addons' => true,
 	      'clone_nonce'    => wp_create_nonce('ns_cloner')
 	  ];
