@@ -28,12 +28,12 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 add_action( 'gform_after_submission_1', 'gform_site_cloner', 10, 2 );//specific to the gravity form id
 
 function gform_site_cloner($entry, $form){
-	$clone_source_id = get_blog_id_from_url(rgar( $entry, '2' ));//takes url of the site and gets you the ID made for subdomains
+	$clone_source_id = get_blog_id_from_url(rgar( $entry, '1' ));//takes url of the site and gets you the ID made for subdomains
     $_POST =  [
 	      'action'         => 'process',
 	      'clone_mode'     => 'core',
-	      'source_id'      => rgar( $entry, '1' ), //specific to the form entry fields and should resolve to the ID site to copy
-	      'target_name'    => $clone_source_id, //specific to the form entry fields - need to parallel site url restrictions
+	      'source_id'      => $clone_source_id, //specific to the form entry fields and should resolve to the ID site to copy
+	      'target_name'    => rgar( $entry, '2' ), //specific to the form entry fields - need to parallel site url restrictions
 	      'target_title'   => rgar( $entry, '3' ), //specific to the form entry fields
 	      'disable_addons' => true,
 	      'clone_nonce'    => wp_create_nonce('ns_cloner')
