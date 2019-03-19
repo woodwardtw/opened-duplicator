@@ -117,25 +117,31 @@ function create_clone_cpt() {
 }
 add_action( 'init', 'create_clone_cpt', 0 );
 
-//get site ID
-function get_blog_id($url){
-	// For subdirectory installs
-	if ( defined( 'SUBDOMAIN_INSTALL' ) ) 
-	{
-	    if( SUBDOMAIN_INSTALL )
-	       	$blog_id = get_blog_id_from_url($url);
-	    else
-	      $parsed = parse_url($url);
-	      $blog_id = get_blog_id_from_url($parsed['host'], $parsed['path'].'/');
-	}
+
+//GET URL OF CLONE SITE
+function acf_fetch_site_url(){
+  global $post;
+  $html = '';
+  $site_url = get_field('site_url');
+    if( $site_url) {      
+      $html = $site_url;  
+     return $html;    
+    }
 
 }
 
-
+//GET SITE ID OF CLONE SITE
 function build_site_clone_button($content){
-	$url = '192.168.33.10/wordpress/opened';
-	$site_id = get_blog_id($url);	
-	return $content . 'foo' . $site_id;
+	global $post;
+    if ($post->post_type === 'clone'){
+        $url = acf_fetch_site_url($post->ID);
+        $parsed = parse_url($url);
+    	$site_id = get_blog_id_from_url($parsed['host']);	
+    	return $content . '<a class="button" href="https://opened.ca/clone-zone?clone=' . $site_id . '">Clone it to own it!</a>';
+    }
+    else {
+        return $content;
+    }
 }
 
 add_filter( 'the_content', 'build_site_clone_button' );
