@@ -22,7 +22,7 @@ function opened_duplicator_scripts() {
     $version= '1.0'; 
     $in_footer = true;    
     wp_enqueue_script('opened-dup-main-js', plugin_dir_url( __FILE__) . 'js/opened-dup-main.js', $deps, $version, $in_footer); 
-    wp_enqueue_style( 'opened-dup-main-css', plugin_dir_url( __FILE__) . 'opened-dup-main.css');
+    wp_enqueue_style( 'opened-dup-main-css', plugin_dir_url( __FILE__) . 'css/opened-dup-main.css');
 }
 
 add_action( 'gform_after_submission_1', 'gform_site_cloner', 10, 2 );//specific to the gravity form id
