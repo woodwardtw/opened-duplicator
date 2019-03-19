@@ -21,8 +21,8 @@ function opened_duplicator_scripts() {
     $deps = array('jquery');
     $version= '1.0'; 
     $in_footer = true;    
-    wp_enqueue_script('prefix-main-js', plugin_dir_url( __FILE__) . 'js/prefix-main.js', $deps, $version, $in_footer); 
-    wp_enqueue_style( 'prefix-main-css', plugin_dir_url( __FILE__) . 'css/prefix-main.css');
+    wp_enqueue_script('opened-dup-main-js', plugin_dir_url( __FILE__) . 'js/opened-dup-main.js', $deps, $version, $in_footer); 
+    wp_enqueue_style( 'opened-dup-main-css', plugin_dir_url( __FILE__) . 'opened-dup-main.css');
 }
 
 add_action( 'gform_after_submission_1', 'gform_site_cloner', 10, 2 );//specific to the gravity form id
@@ -137,7 +137,7 @@ function build_site_clone_button($content){
         $url = acf_fetch_site_url($post->ID);
         $parsed = parse_url($url);
     	$site_id = get_blog_id_from_url($parsed['host']);	
-    	return $content . '<a class="button" href="https://opened.ca/clone-zone?clone=' . $site_id . '">Clone it to own it!</a>';
+    	return $content . '<a class="dup-button" href="https://opened.ca/clone-zone?clone=' . $site_id . '">Clone it to own it!</a>';
     }
     else {
         return $content;
