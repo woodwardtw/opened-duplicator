@@ -93,7 +93,7 @@ function create_clone_cpt() {
     'labels' => $labels,
     'menu_icon' => '',
     'supports' => array('title', 'editor', 'revisions', 'author', 'trackbacks', 'custom-fields', 'thumbnail',),
-    'taxonomies' => array(),
+    'taxonomies' => array('category'),
     'public' => true,
     'show_ui' => true,
     'show_in_menu' => true,
@@ -137,7 +137,7 @@ function build_site_clone_button($content){
         $url = acf_fetch_site_url($post->ID);
         $parsed = parse_url($url);
     	$site_id = get_blog_id_from_url($parsed['host']);	
-    	return $content . '<a class="dup-button" href="https://opened.ca/clone-zone?clone=' . $site_id . '">Clone it to own it!</a>';
+    	return $content . '<a class="dup-button" href="https://opened.ca/clone-zone?cloner=' . $site_id . '#field_1_2">Clone it to own it!</a>';
     }
     else {
         return $content;
