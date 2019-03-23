@@ -2,7 +2,8 @@
 document.getElementById("input_1_3").addEventListener("input", function(e) {
     // Get all inputs in the form we specifically are looking at, this selector can be
     // changed if this is supposed to be applied to specific inputs
-    var inputs = document.querySelectorAll('#input_1_3 input');
+  console.log('input registered');
+    var inputs = document.querySelectorAll('#input_1_3');
     var forbiddenChars = /[^a-z\d\-]/ig;
     
     // check all the inputs we selected
@@ -14,9 +15,8 @@ document.getElementById("input_1_3").addEventListener("input", function(e) {
         if(forbiddenChars.test(input.value)) {
             // This line is just to do something on a failure for Stackoverflow
             // I suggest removing this and doing something different in application
-            console.log('Your subdomain name ' + input.name + ' has forbidden characters.');
-            
-            // Do stuff here
+            alert('Your subdomain name had forbidden characters. Please only use lowercase letters, numbers or hyphens.');
+            input.value = input.value.slice(0, -1);//remove that bad character
 
             // Prevent submit even propagation (don't submit)
             e.preventDefault();
