@@ -16,7 +16,7 @@ document.getElementById("input_1_3").addEventListener("input", function(e) {
             // This line is just to do something on a failure for Stackoverflow
             // I suggest removing this and doing something different in application
             alert('Your subdomain name had forbidden characters. Please only use lowercase letters, numbers or hyphens.');
-            input.value = input.value.slice(0, -1);//remove that bad character
+            input.value = input.value.replace(forbiddenChars,'');//remove that bad character
 
             // Prevent submit even propagation (don't submit)
             e.preventDefault();
