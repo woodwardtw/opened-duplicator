@@ -14,3 +14,8 @@
 .dup-button:hover {
 	background-color: $fff;
 }
+
+#domain-name.success {
+	border-left: 8px solid green ;
+  padding-left: 8px; 
+}

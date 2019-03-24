@@ -21,16 +21,25 @@ document.getElementById("input_1_3").addEventListener("input", function(e) {
             return false;
         }
     }
-  document.getElementById('domain-name').innerHTML = input.value + '.opened.ca'
+  document.getElementById('domain-name').innerHTML = input.value + '.opened.ca';
+   textSuccess();
 });
 
 function createUrlDiv(){
  let fieldId = document.getElementById('field_1_3');
-  console.log(fieldId);
  let domain = document.createElement("div");
-  console.log(domain);
   fieldId.appendChild(domain);
    domain.setAttribute("id", "domain-name");
    domain.innerHTML = 'YOURNAME.opened.ca';
 }
 createUrlDiv();
+
+document.getElementById("input_1_3").addEventListener("blur", textSuccess);
+function textSuccess(){
+  let domainName = document.getElementById('domain-name');
+  if (domainName.className === "success"){
+    domainName.setAttribute("class", "");
+  }else {
+    domainName.setAttribute("class", "success");  
+  }
+}
