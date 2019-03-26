@@ -181,3 +181,40 @@ function populate_posts( $form ) {
  
     return $form;
 }
+
+
+//GET SITES WITH SAME THEME
+//modified from https://gist.github.com/davejamesmiller/1966341
+function projects_menu($link_self = true, $theme){
+    global $wpdb;
+    echo '<ul>';
+    projects_menu_entry(1, 'Home', $link_self);
+    //exclude would need to include an array built of all the clone source IDs
+    $blogs = $wpdb->get_results("
+        SELECT blog_id
+        FROM {$wpdb->blogs}
+        WHERE site_id = '{$wpdb->siteid}'
+        AND spam = '0'
+        AND deleted = '0'
+        AND archived = '0'
+        AND blog_id != 1
+    ");
+    $sites = array();
+    foreach ($blogs as $blog) {
+        $sites[$blog->blog_id] = get_blog_option($blog->blog_id, 'blogname');
+        //blog_public is extra privacy area
+        //stylesheet gets us the theme
+    }
+    natsort($sites);
+    foreach ($sites as $blog_id => $blog_title) {
+        projects_menu_entry($blog_id, $blog_title, $link_self);
+    }
+    echo '</ul>';
+}
+// Adds a [bloglist] shortcode, so I can embed the menu into the static homepage.
+// Note: I originally put it directly into the template, but that didn't work
+// with WPtouch.
+add_shortcode('bloglist', function($atts)
+{
+    projects_menu(false);
+});
