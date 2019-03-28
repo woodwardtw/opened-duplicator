@@ -29,26 +29,53 @@ add_action( 'gform_after_submission_1', 'gform_site_cloner', 10, 2 );//specific 
 
 function gform_site_cloner($entry, $form){
     $_POST =  [
-	      'action'         => 'process',
-	      'clone_mode'     => 'core',
-	      'source_id'      => rgar( $entry, '1' ), //specific to the form entry fields and should resolve to the ID site to copy
-	      'target_name'    => rgar( $entry, '3' ), //specific to the form entry fields - need to parallel site url restrictions URL/DOMAIN
-	      'target_title'   => rgar( $entry, '2' ), //specific to the form entry fields TITLE
-	      'disable_addons' => true,
-	      'clone_nonce'    => wp_create_nonce('ns_cloner')
-	  ];
-	
-	// Setup clone process and run it.
-	$ns_site_cloner = new ns_cloner();
-	$ns_site_cloner->process();
+          'action'         => 'process',
+          'clone_mode'     => 'core',
+          'source_id'      => rgar( $entry, '1' ), //specific to the form entry fields and should resolve to the ID site to copy
+          'target_name'    => rgar( $entry, '3' ), //specific to the form entry fields - need to parallel site url restrictions URL/DOMAIN
+          'target_title'   => rgar( $entry, '2' ), //specific to the form entry fields TITLE
+          'disable_addons' => true,
+          'clone_nonce'    => wp_create_nonce('ns_cloner')
+      ];
+    
+    // Setup clone process and run it.
+    $ns_site_cloner = new ns_cloner();
+    $ns_site_cloner->process();
 
-	$site_id = $ns_site_cloner->target_id;
-	$site_info = get_blog_details( $site_id );
-	if ( $site_info ) {
-		// Clone successful!
-	}
+    $site_id = $ns_site_cloner->target_id;
+    $site_info = get_blog_details( $site_id );
+    if ( $site_info ) {
+     // Clone successful!
+    }
 }
 
+//add created sites to cloner posts
+add_action( 'gform_after_submission_1', 'gform_new_site_to_acf', 10, 2 );//specific to the gravity form id
+
+function gform_new_site_to_acf($entry, $form){
+    $form_title = rgar( $entry, '2' );
+    $form_url = rgar( $entry, '3' );
+    $clone_form_id = (int)rgar( $entry, '1');
+   
+     $posts = get_posts( 'numberposts=-1&post_status=publish&post_type=clone' ); 
+        foreach ( $posts as $post ) {
+            $url = get_field('site_url', $post->ID);
+            $parsed = parse_url($url);
+            $clone_id = get_blog_id_from_url($parsed['host']);
+            if ($clone_id === $clone_form_id){
+                $post_id = $post->ID;
+            }
+        }
+
+    $row = array(
+        'name'   => $form_title,
+        'url'  => $form_url . '.opened.ca',
+        'description' => '',
+        'display' => 'False'
+    );
+
+    $i = add_row('examples', $row, $post_id);
+}
 
 
 //clone custom post type
@@ -132,12 +159,12 @@ function acf_fetch_site_url(){
 
 //GET SITE ID OF CLONE SITE
 function build_site_clone_button($content){
-	global $post;
+    global $post;
     if ($post->post_type === 'clone'){
         $url = acf_fetch_site_url($post->ID);
         $parsed = parse_url($url);
-    	$site_id = get_blog_id_from_url($parsed['host']);	
-    	return $content . '<a class="dup-button" href="https://opened.ca/clone-zone?cloner=' . $site_id . '#field_1_2">Clone it to own it!</a>';
+        $site_id = get_blog_id_from_url($parsed['host']);   
+        return $content . '<a class="dup-button" href="https://opened.ca/clone-zone?cloner=' . $site_id . '#field_1_2">Clone it to own it!</a>';
     }
     else {
         return $content;
@@ -181,40 +208,3 @@ function populate_posts( $form ) {
  
     return $form;
 }
-
-
-//GET SITES WITH SAME THEME
-//modified from https://gist.github.com/davejamesmiller/1966341
-function projects_menu($link_self = true, $theme){
-    global $wpdb;
-    echo '<ul>';
-    projects_menu_entry(1, 'Home', $link_self);
-    //exclude would need to include an array built of all the clone source IDs
-    $blogs = $wpdb->get_results("
-        SELECT blog_id
-        FROM {$wpdb->blogs}
-        WHERE site_id = '{$wpdb->siteid}'
-        AND spam = '0'
-        AND deleted = '0'
-        AND archived = '0'
-        AND blog_id != 1
-    ");
-    $sites = array();
-    foreach ($blogs as $blog) {
-        $sites[$blog->blog_id] = get_blog_option($blog->blog_id, 'blogname');
-        //blog_public is extra privacy area
-        //stylesheet gets us the theme
-    }
-    natsort($sites);
-    foreach ($sites as $blog_id => $blog_title) {
-        projects_menu_entry($blog_id, $blog_title, $link_self);
-    }
-    echo '</ul>';
-}
-// Adds a [bloglist] shortcode, so I can embed the menu into the static homepage.
-// Note: I originally put it directly into the template, but that didn't work
-// with WPtouch.
-add_shortcode('bloglist', function($atts)
-{
-    projects_menu(false);
-});
