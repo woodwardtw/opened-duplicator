@@ -25,11 +25,6 @@ function opened_duplicator_scripts() {
     wp_enqueue_style( 'opened-dup-main-css', plugin_dir_url( __FILE__) . 'css/opened-dup-main.css');
 }
 
-/*
-LAND OF GRAVITY FORMS
-*/
-
-//DUPLICATOR**************
 add_action( 'gform_after_submission_1', 'gform_site_cloner', 10, 2 );//specific to the gravity form id
 
 function gform_site_cloner($entry, $form){
@@ -54,7 +49,6 @@ function gform_site_cloner($entry, $form){
     }
 }
 
-//ACF ADDER**************
 //add created sites to cloner posts
 add_action( 'gform_after_submission_1', 'gform_new_site_to_acf', 10, 2 );//specific to the gravity form id
 
@@ -63,7 +57,6 @@ function gform_new_site_to_acf($entry, $form){
     $form_url = rgar( $entry, '3' );
     $clone_form_id = (int)rgar( $entry, '1');
    
-   //odd way to get from the gform entry data back to the clone ID but best I could come up with
      $posts = get_posts( 'numberposts=-1&post_status=publish&post_type=clone' ); 
         foreach ( $posts as $post ) {
             $url = get_field('site_url', $post->ID);
@@ -74,10 +67,9 @@ function gform_new_site_to_acf($entry, $form){
             }
         }
 
-//sets the ACF Fields
     $row = array(
         'name'   => $form_title,
-        'url'  => $form_url . '.opened.ca',
+        'url'  => 'https://' .$form_url . '.opened.ca',
         'description' => '',
         'display' => 'False'
     );
@@ -85,7 +77,7 @@ function gform_new_site_to_acf($entry, $form){
     $i = add_row('examples', $row, $post_id);
 }
 
-//GRAVITY FORM PROVISIONING OF CLONE OPTIONS BASED ON CLONE POSTS
+//GRAVITY FORM PROVISIONING BASED ON CLONE POSTS
 add_filter( 'gform_pre_render_1', 'populate_posts' );
 add_filter( 'gform_pre_validation_1', 'populate_posts' );
 add_filter( 'gform_pre_submission_filter_1', 'populate_posts' );
@@ -120,11 +112,9 @@ function populate_posts( $form ) {
     return $form;
 }
 
-
 /*
-CUSTOM POST TYPE CREATION
+CREATE CLONE CUSTOM POST TYPE
 */
-//cloner custom post type
 
 // Register Custom Post Type clone
 // Post Type Key: clone
@@ -207,10 +197,9 @@ function acf_fetch_site_url(){
 function build_site_clone_button($content){
     global $post;
     if ($post->post_type === 'clone'){
-        $url = acf_fetch_site_url($post->ID);
-        $parsed = parse_url($url);
-        $site_id = get_blog_id_from_url($parsed['host']);   
-        return $content . '<a class="dup-button" href="https://opened.ca/clone-zone?cloner=' . $site_id . '#field_1_2">Clone it to own it!</a>';
+       $button = clone_button_maker(); 
+       $clone_examples = clone_finder(); 
+        return $content . $button . $clone_examples;
     }
     else {
         return $content;
@@ -218,4 +207,36 @@ function build_site_clone_button($content){
 }
 
 add_filter( 'the_content', 'build_site_clone_button' );
+
+
+function clone_button_maker(){
+    $url = acf_fetch_site_url($post->ID);
+    $parsed = parse_url($url);
+    $site_id = get_blog_id_from_url($parsed['host']);   
+    return '<a class="dup-button" href="https://opened.ca/clone-zone?cloner=' . $site_id . '#field_1_2">Clone it to own it!</a>';
+}
+
+function clone_finder(){
+    if( have_rows('examples') ):
+    $clone_html = '';
+    // loop through the rows of data
+    while ( have_rows('examples') ) : the_row();
+        // display a sub field value
+        $name = get_sub_field('name');
+        $url = get_sub_field('url');
+        $description = get_sub_field('description');
+        $display = get_sub_field('display');
+        if ($display == "True") {
+            $clone_html = '<div class="clone-example"><a href="'.$url.'"><h3>' . $name . '</h3></a><div class="clone-description">' . $description . '</div></div>';  
+        }
+
+    endwhile;
+    return $clone_html;
+
+    else :
+
+        // no rows found
+
+    endif;
+}
 
