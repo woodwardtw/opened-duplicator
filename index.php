@@ -25,6 +25,11 @@ function opened_duplicator_scripts() {
     wp_enqueue_style( 'opened-dup-main-css', plugin_dir_url( __FILE__) . 'css/opened-dup-main.css');
 }
 
+/*
+LAND OF GRAVITY FORMS
+*/
+
+//DUPLICATOR**************
 add_action( 'gform_after_submission_1', 'gform_site_cloner', 10, 2 );//specific to the gravity form id
 
 function gform_site_cloner($entry, $form){
@@ -49,6 +54,7 @@ function gform_site_cloner($entry, $form){
     }
 }
 
+//ACF ADDER**************
 //add created sites to cloner posts
 add_action( 'gform_after_submission_1', 'gform_new_site_to_acf', 10, 2 );//specific to the gravity form id
 
@@ -57,6 +63,7 @@ function gform_new_site_to_acf($entry, $form){
     $form_url = rgar( $entry, '3' );
     $clone_form_id = (int)rgar( $entry, '1');
    
+   //odd way to get from the gform entry data back to the clone ID but best I could come up with
      $posts = get_posts( 'numberposts=-1&post_status=publish&post_type=clone' ); 
         foreach ( $posts as $post ) {
             $url = get_field('site_url', $post->ID);
@@ -67,6 +74,7 @@ function gform_new_site_to_acf($entry, $form){
             }
         }
 
+//sets the ACF Fields
     $row = array(
         'name'   => $form_title,
         'url'  => $form_url . '.opened.ca',
@@ -77,8 +85,46 @@ function gform_new_site_to_acf($entry, $form){
     $i = add_row('examples', $row, $post_id);
 }
 
+//GRAVITY FORM PROVISIONING OF CLONE OPTIONS BASED ON CLONE POSTS
+add_filter( 'gform_pre_render_1', 'populate_posts' );
+add_filter( 'gform_pre_validation_1', 'populate_posts' );
+add_filter( 'gform_pre_submission_filter_1', 'populate_posts' );
+add_filter( 'gform_admin_pre_render_1', 'populate_posts' );
+function populate_posts( $form ) {
+ 
+    foreach ( $form['fields'] as &$field ) {
+ 
+        if ( $field->id != 1 ) {
+            continue;
+        }
+ 
+        // you can add additional parameters here to alter the posts that are retrieved
+        // more info: http://codex.wordpress.org/Template_Tags/get_posts
+        $posts = get_posts( 'numberposts=-1&post_status=publish&post_type=clone' );
+ 
+        $choices = array();
+ 
+        foreach ( $posts as $post ) {
+            $url = get_field('site_url', $post->ID);
+            $parsed = parse_url($url);
+            $clone_id = get_blog_id_from_url($parsed['host']);
+            $choices[] = array( 'text' => $post->post_title, 'value' => $clone_id);
+        }
+ 
+        // update 'Select a Post' to whatever you'd like the instructive option to be
+        $field->placeholder = 'Select a site to clone';
+        $field->choices = $choices;
+ 
+    }
+ 
+    return $form;
+}
 
-//clone custom post type
+
+/*
+CUSTOM POST TYPE CREATION
+*/
+//cloner custom post type
 
 // Register Custom Post Type clone
 // Post Type Key: clone
@@ -173,38 +219,3 @@ function build_site_clone_button($content){
 
 add_filter( 'the_content', 'build_site_clone_button' );
 
-
-//GRAVITY FORM PROVISIONING BASED ON CLONE POSTS
-add_filter( 'gform_pre_render_1', 'populate_posts' );
-add_filter( 'gform_pre_validation_1', 'populate_posts' );
-add_filter( 'gform_pre_submission_filter_1', 'populate_posts' );
-add_filter( 'gform_admin_pre_render_1', 'populate_posts' );
-function populate_posts( $form ) {
- 
-    foreach ( $form['fields'] as &$field ) {
- 
-        if ( $field->id != 1 ) {
-            continue;
-        }
- 
-        // you can add additional parameters here to alter the posts that are retrieved
-        // more info: http://codex.wordpress.org/Template_Tags/get_posts
-        $posts = get_posts( 'numberposts=-1&post_status=publish&post_type=clone' );
- 
-        $choices = array();
- 
-        foreach ( $posts as $post ) {
-            $url = get_field('site_url', $post->ID);
-            $parsed = parse_url($url);
-            $clone_id = get_blog_id_from_url($parsed['host']);
-            $choices[] = array( 'text' => $post->post_title, 'value' => $clone_id);
-        }
- 
-        // update 'Select a Post' to whatever you'd like the instructive option to be
-        $field->placeholder = 'Select a site to clone';
-        $field->choices = $choices;
- 
-    }
- 
-    return $form;
-}
