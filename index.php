@@ -208,7 +208,7 @@ function build_site_clone_button($content){
 
 add_filter( 'the_content', 'build_site_clone_button' );
 
-
+//builds clone button link
 function clone_button_maker(){
     $url = acf_fetch_site_url($post->ID);
     $parsed = parse_url($url);
@@ -216,6 +216,8 @@ function clone_button_maker(){
     return '<a class="dup-button" href="https://opened.ca/clone-zone?cloner=' . $site_id . '#field_1_2">Clone it to own it!</a>';
 }
 
+
+//builds clone example list
 function clone_finder(){
     if( have_rows('examples') ):
     $clone_html = '';
