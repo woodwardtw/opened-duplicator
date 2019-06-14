@@ -221,6 +221,7 @@ function clone_button_maker(){
 function clone_finder(){
     if( have_rows('examples') ):
     $clone_html = '';
+    $clone_html = '<h2>Example Sites</h2>';
     // loop through the rows of data
     while ( have_rows('examples') ) : the_row();
         // display a sub field value
@@ -229,7 +230,7 @@ function clone_finder(){
         $description = get_sub_field('description');
         $display = get_sub_field('display');
         if ($display == "True") {
-            $clone_html = '<div class="clone-example"><a href="'.$url.'"><h3>' . $name . '</h3></a><div class="clone-description">' . $description . '</div></div>';  
+            $clone_html .= '<div class="clone-example"><a href="'.$url.'"><h3>' . $name . '</h3></a><div class="clone-description">' . $description . '</div></div>';  
         }
 
     endwhile;
