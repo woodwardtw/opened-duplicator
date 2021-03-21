@@ -1,3 +1,6 @@
+createUrlDiv();
+
+
 //from https://stackoverflow.com/questions/44933411/allow-only-letters-numbers-and-hyphen-in-input 
 document.getElementById("input_1_3").addEventListener("input", function(e) {
     // Get all inputs in the form we specifically are looking at, this selector can be
@@ -14,14 +17,14 @@ document.getElementById("input_1_3").addEventListener("input", function(e) {
         if(forbiddenChars.test(input.value)) {
             // This line is just to do something on a failure for Stackoverflow
             // I suggest removing this and doing something different in application
-            alert('Your subdomain name had forbidden characters. Please only use lowercase letters, numbers or hyphens.');
+            alert('Your site name had forbidden characters. Please only use lowercase letters, numbers or hyphens.');
             input.value = input.value.replace(forbiddenChars,'');//remove that bad character           
             // Prevent submit even propagation (don't submit)
             //e.preventDefault();
             return false;
         }
     }
-  document.getElementById('domain-name').innerHTML = input.value + '.opened.ca';
+  document.getElementById('domain-name').innerHTML =  input.value + '.opened.ca';
    textSuccess();
 });
 
@@ -30,9 +33,8 @@ function createUrlDiv(){
  let domain = document.createElement("div");
   fieldId.appendChild(domain);
    domain.setAttribute("id", "domain-name");
-   domain.innerHTML = 'YOURNAME.opened.ca';
+   domain.innerHTML = 'YOUR_DOMAIN_NAME.opened.ca';
 }
-createUrlDiv();
 
 document.getElementById("input_1_3").addEventListener("blur", textSuccess);
 function textSuccess(){

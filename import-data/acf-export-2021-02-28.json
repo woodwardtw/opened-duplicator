@@ -1,0 +1,47 @@
+[
+    {
+        "key": "group_5fca9d2009d3f",
+        "title": "Clone Settings",
+        "fields": [
+            {
+                "key": "field_5fca9da5ed5ec",
+                "label": "Cloner Page",
+                "name": "cloner_page",
+                "type": "post_object",
+                "instructions": "Select the URL of the page where your Cloning Gravity Form exists here.",
+                "required": 0,
+                "conditional_logic": 0,
+                "wrapper": {
+                    "width": "",
+                    "class": "",
+                    "id": ""
+                },
+                "post_type": [
+                    "page"
+                ],
+                "taxonomy": "",
+                "allow_null": 0,
+                "multiple": 0,
+                "return_format": "object",
+                "ui": 1
+            }
+        ],
+        "location": [
+            [
+                {
+                    "param": "options_page",
+                    "operator": "==",
+                    "value": "clone-zone-settings"
+                }
+            ]
+        ],
+        "menu_order": 0,
+        "position": "normal",
+        "style": "default",
+        "label_placement": "top",
+        "instruction_placement": "label",
+        "hide_on_screen": "",
+        "active": true,
+        "description": ""
+    }
+]
