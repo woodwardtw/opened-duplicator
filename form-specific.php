@@ -8,6 +8,8 @@ THESE ARE THE FUNCTIONS THAT PLAY OFF GRAVITY FORMS
 
 */
 
+$form_id = get_field('gravity_form_id', 'option');//get the form ID 
+
 
 //DOES THE DUPLICATION
 add_action( 'gform_after_submission_' . $form_id, 'gform_site_cloner', 10, 2 );//specific to the gravity form id

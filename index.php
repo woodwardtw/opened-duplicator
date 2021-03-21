@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 add_action('wp_enqueue_scripts', 'opened_duplicator_scripts');
 
-$form_id = RGFormsModel::get_form_id('duplicate site');
+//$form_id = get_field('gravity_form_id', 'option');//get the form ID 
 
 function opened_duplicator_scripts() {                           
     $deps = array('jquery');
@@ -27,7 +27,23 @@ function opened_duplicator_scripts() {
     wp_enqueue_style( 'opened-dup-main-css', plugin_dir_url( __FILE__) . 'css/opened-dup-main.css');
 }
 
+//CREATE OPTIONS PAGE
+if( function_exists('acf_add_options_page') ) {
+    
+    acf_add_options_page(array(
+        'page_title'    => 'Clone Zone Settings',
+        'menu_title'    => 'Cloner Settings',
+        'menu_slug'     => 'clone-zone-settings',
+        'capability'    => 'edit_posts',
+        'redirect'      => false
+    ));
+    
+}
+
+
+
 //LOAD THE OTHER PAGES
 include_once( plugin_dir_path( __FILE__ ) . 'form-specific.php' ); //gravity form specific elements
-include_once( plugin_dir_path( __FILE__ ) . 'clone-details.php' );//display details on clone page view
+include_once( plugin_dir_path( __FILE__ ) . 'acf.php' ); //gravity form specific elements
 include_once( plugin_dir_path( __FILE__ ) . 'cpt.php' ); //create clone custom post type
+include_once( plugin_dir_path( __FILE__ ) . 'clone-details.php' );//display details on clone page view

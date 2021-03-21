@@ -56,7 +56,7 @@ add_filter( 'the_content', 'build_site_clone_button' );
 //builds clone button link
 function clone_button_maker(){
     global $post;
-    $form_id = RGFormsModel::get_form_id('duplicator');
+    $form_id = get_field('gravity_form_id', 'option');//get the form ID 
     $url = acf_fetch_site_url($post->ID);
     $main = parse_url($url);//probably need to add a check for trailing slash
     $arg = array(
