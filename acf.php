@@ -28,19 +28,6 @@ function acf_fetch_site_url(){
 
 //*********************ACF SPECIFIC****************//
 
-//CREATE OPTIONS PAGE
-if( function_exists('acf_add_options_page') ) {
-    
-    acf_add_options_page(array(
-        'page_title'    => 'Clone Zone Settings',
-        'menu_title'    => 'Cloner Settings',
-        'menu_slug'     => 'clone-zone-settings',
-        'capability'    => 'edit_posts',
-        'redirect'      => false
-    ));
-    
-}
-
 
 
 //ACF JSON SAVER

@@ -14,7 +14,7 @@ function clone_finder(){
     $title = '';
     $allowed_view = get_field('visible_to');// get the field of allowed viewers
     $current_user = get_current_user_id();
-    $view_ok = in_array($current_user, $allowed_view);
+    $view_ok = in_array($current_user, $allowed_view);//is user id in array of allowed viewers?
     // loop through the rows of data
     while ( have_rows('examples') ) : the_row();
         $name = get_sub_field('name');
