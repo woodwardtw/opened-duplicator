@@ -15,6 +15,39 @@ Text Domain: opened-duplicator
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 
+//LOGGER -- like frogger but more useful
+
+if ( ! function_exists('write_log')) {
+   function write_log ( $log )  {
+      if ( is_array( $log ) || is_object( $log ) ) {
+         error_log( print_r( $log, true ) );
+      } else {
+         error_log( $log );
+      }
+   }
+}
+
+/**
+ * Populate ACF select field options with Gravity Forms forms
+ * from https://gist.github.com/psaikali/2b29e6e83f50718625af27c2958c828f
+ */
+function acf_populate_gf_forms_ids( $field ) {
+  //write_log($field);
+  if ( class_exists( 'GFFormsModel' ) ) {
+    $choices = [];
+    foreach ( \GFFormsModel::get_forms() as $form ) {
+      $choices[ $form->id ] = $form->title;
+    }
+    $field['choices'] = $choices;
+  }
+
+  return $field;
+}
+//add_filter( 'acf/load_field/key=field_60574d267b426', 'acf_populate_gf_forms_ids' );
+
+add_filter( 'acf/load_field/key=field_60574d267b426', 'acf_populate_gf_forms_ids' );
+
+
 add_action('wp_enqueue_scripts', 'opened_duplicator_scripts');
 
 //$form_id = get_field('gravity_form_id', 'option');//get the form ID 
@@ -37,7 +70,6 @@ if( function_exists('acf_add_options_page') ) {
         'capability'    => 'edit_posts',
         'redirect'      => false
     ));
-    
 }
 
 
@@ -47,3 +79,8 @@ include_once( plugin_dir_path( __FILE__ ) . 'form-specific.php' ); //gravity for
 include_once( plugin_dir_path( __FILE__ ) . 'acf.php' ); //gravity form specific elements
 include_once( plugin_dir_path( __FILE__ ) . 'cpt.php' ); //create clone custom post type
 include_once( plugin_dir_path( __FILE__ ) . 'clone-details.php' );//display details on clone page view
+
+
+
+
+

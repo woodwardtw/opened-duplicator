@@ -3,10 +3,9 @@
 defined( 'ABSPATH' ) or die( 'No script kiddies please!' );
 
 /*
-
-THESE ARE THE ACF SPECIFIC FUNCTIONS
-
+*THESE ARE THE ACF SPECIFIC FUNCTIONS
 */
+
 
 
 //GET URL OF CLONE SITE

@@ -3,11 +3,11 @@
     "title": "Clone Settings",
     "fields": [
         {
-            "key": "field_5fca9da5ed5ec",
-            "label": "Cloner Page",
-            "name": "cloner_page",
-            "type": "post_object",
-            "instructions": "Select the URL of the page where your Cloning Gravity Form exists here.",
+            "key": "field_60574d267b426",
+            "label": "Your clone form",
+            "name": "cloner_form",
+            "type": "select",
+            "instructions": "Select the form that does the cloning",
             "required": 0,
             "conditional_logic": 0,
             "wrapper": {
@@ -15,35 +15,17 @@
                 "class": "",
                 "id": ""
             },
-            "post_type": [
-                "page"
-            ],
-            "taxonomy": "",
+            "choices": {
+                "2": "clean copy",
+                "1": "duplicate site"
+            },
+            "default_value": false,
             "allow_null": 0,
             "multiple": 0,
-            "return_format": "object",
-            "ui": 1
-        },
-        {
-            "key": "field_60574d267b426",
-            "label": "Gravity Form ID",
-            "name": "gravity_form_id",
-            "type": "number",
-            "instructions": "Select the form ID for the clone form.",
-            "required": 0,
-            "conditional_logic": 0,
-            "wrapper": {
-                "width": "",
-                "class": "",
-                "id": ""
-            },
-            "default_value": "",
-            "placeholder": "",
-            "prepend": "",
-            "append": "",
-            "min": "",
-            "max": "",
-            "step": ""
+            "ui": 0,
+            "return_format": "value",
+            "ajax": 0,
+            "placeholder": ""
         }
     ],
     "location": [
@@ -63,5 +45,5 @@
     "hide_on_screen": "",
     "active": true,
     "description": "",
-    "modified": 1616346479
+    "modified": 1617541651
 }
