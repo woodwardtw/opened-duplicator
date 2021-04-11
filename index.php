@@ -28,6 +28,7 @@ if ( ! function_exists('write_log')) {
 }
 
 /**
+ * THIS GIVES YOU THE OPTION TO PICK FORMS FROM THE OPTIONS AREA
  * Populate ACF select field options with Gravity Forms forms
  * from https://gist.github.com/psaikali/2b29e6e83f50718625af27c2958c828f
  */
@@ -43,7 +44,6 @@ function acf_populate_gf_forms_ids( $field ) {
 
   return $field;
 }
-//add_filter( 'acf/load_field/key=field_60574d267b426', 'acf_populate_gf_forms_ids' );
 
 add_filter( 'acf/load_field/key=field_60574d267b426', 'acf_populate_gf_forms_ids' );
 

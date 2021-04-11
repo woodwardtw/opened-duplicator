@@ -57,21 +57,27 @@ add_filter( 'the_content', 'build_site_clone_area' );
 function clone_button_maker(){
     global $post;
     $form_id = get_field('gravity_form_id', 'option');//get the form ID 
-    $url = acf_fetch_site_url($post->ID);
+   
+    set_the_clone_id();
+    $clone_page = get_field('cloner_page', 'option');
+    $form_id = get_field( 'cloner_form','options');
+    //$clone_page_slug = $clone_page->post_name;
+    //var_dump($clone_page_slug);
+    $form_html = '[gravityform id="'. $form_id . '" title="false" description="false"]';
+    return '<button class="dup-button">Clone it to own it!</button>' . $form_html;
+}
+
+//auto fill the gravity form field with the dynamic field population set to 'site_id'
+add_filter( 'gform_field_value_site_id', 'set_the_clone_id' );
+function set_the_clone_id() {
+    global $post;
+     $url = acf_fetch_site_url($post->ID);
     $main = parse_url($url);//probably need to add a check for trailing slash
     $arg = array(
         'domain' => $main['host'],
         'path' => $main['path']
     );
     $blog_details = get_blog_details($arg);
-
     $site_id = $blog_details->blog_id;   
-
-    $clone_page = get_field('cloner_page', 'option');
-    $form_id = get_field( 'cloner_form','options');
-    //$clone_page_slug = $clone_page->post_name;
-    //var_dump($clone_page_slug);
-    $form_html = '[gravityform id="'. $form_id .'" field_values="site_id=' . $site_id . '" title="false" description="false"]';
-    return '<button class="dup-button">Clone it to own it!</button>' . $form_html;
+    return $site_id;
 }
-
