@@ -38,7 +38,7 @@ function clone_finder(){
 }
 
 //GET SITE ID OF CLONE SITE
-function build_site_clone_button($content){
+function build_site_clone_area($content){
     global $post;
     if ($post->post_type === 'clone'){
        $button = clone_button_maker(); 
@@ -50,7 +50,7 @@ function build_site_clone_button($content){
     }
 }
 
-add_filter( 'the_content', 'build_site_clone_button' );
+add_filter( 'the_content', 'build_site_clone_area' );
 
 
 //builds clone button link
@@ -68,8 +68,10 @@ function clone_button_maker(){
     $site_id = $blog_details->blog_id;   
 
     $clone_page = get_field('cloner_page', 'option');
-    $clone_page_slug = $clone_page->post_name;
+    $form_id = get_field( 'cloner_form','options');
+    //$clone_page_slug = $clone_page->post_name;
     //var_dump($clone_page_slug);
-    return '<a class="dup-button" href="' . get_site_url() . '/' . $clone_page_slug . '?cloner=' . $site_id . '#field_'. $form_id .'_2">Clone it to own it!</a>';
+    $form_html = '[gravityform id="'. $form_id .'" field_values="site_id=' . $site_id . '" title="false" description="false"]';
+    return '<button class="dup-button">Clone it to own it!</button>' . $form_html;
 }
 
