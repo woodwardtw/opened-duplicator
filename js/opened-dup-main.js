@@ -18,17 +18,16 @@ document.getElementsByName("input_3")[0].addEventListener("input", function(e) {
         
         // Check that there aren't any forbidden chars
         if(forbiddenChars.test(input.value)) {
-            // This line is just to do something on a failure for Stackoverflow
-            // I suggest removing this and doing something different in application
+          textFail();
             alert('Your site name had forbidden characters. Please only use lowercase letters, numbers or hyphens.');
-            input.value = input.value.replace(forbiddenChars,'');//remove that bad character           
-            // Prevent submit even propagation (don't submit)
-            //e.preventDefault();
+            input.value = input.value.replace(forbiddenChars,'');//remove that bad character                    
             return false;
+        } else {
+           textSuccess();
         }
     }
   document.getElementById('domain-name').innerHTML =  input.value + '.opened.ca';
-   textSuccess();
+  
 });
 
 function createUrlDiv(){
@@ -42,9 +41,15 @@ function createUrlDiv(){
 
 function textSuccess(){
   const domainName = document.getElementById('domain-name');
-  if (domainName.className === "success"){
-    domainName.setAttribute("class", "");
-  }else {
+  // if (domainName.className === "success"){
+  //   domainName.setAttribute("class", "");
+  // } else {
     domainName.setAttribute("class", "success");  
-  }
+  //}
+}
+
+function textFail(){
+  console.log('fail')
+    const domainName = document.getElementById('domain-name');
+    domainName.classList.remove('success'); 
 }
