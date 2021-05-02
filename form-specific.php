@@ -8,7 +8,7 @@ THESE ARE THE FUNCTIONS THAT PLAY OFF GRAVITY FORMS
 
 */
 
-$form_id = get_field('gravity_form_id', 'option');//get the form ID 
+$form_id = get_field('cloner_form', 'option');//get the form ID 
 
 
 //DOES THE DUPLICATION
@@ -25,6 +25,7 @@ function gform_site_cloner($entry, $form){
       'do_copy_posts' =>  '1',
       'post_types_to_clone' => 'page',
       'post_types_to_clone' => 'post',
+      //'do_copy_users' => '0',
       //'debug'          => 1 // optional: enables logs
   );
 
@@ -71,23 +72,53 @@ function gform_site_cloner($entry, $form){
 
 }
 
+// function confirm_admin_email($site_url){
+    // remove_action( 'add_option_new_admin_email', 'update_option_new_admin_email' );
+    // remove_action( 'update_option_new_admin_email', 'update_option_new_admin_email' );
+     
+    // /**
+    //  * Disable the confirmation notices when an administrator
+    //  * changes their email address.
+    //  *
+    //  * @see http://codex.wordpress.com/Function_Reference/update_option_new_admin_email
+    //  */
+    // function wpdocs_update_option_new_admin_email( $old_value, $value ) {
+     
+    //     update_option( 'admin_email', $value );
+    // }
+    // add_action( 'add_option_new_admin_email', 'wpdocs_update_option_new_admin_email', 10, 2 );
+    // add_action( 'update_option_new_admin_email', 'wpdocs_update_option_new_admin_email', 10, 2 );
+
+
+// }
+
 function opened_cloner_redirect($name){
     $base_url = network_site_url();
     $protocols = array('http://', 'https://', 'http://www.', 'www.');
     $url =  str_replace($protocols, '', $base_url);
+    update_email_address('https://' . $name . '.' . $url);
     wp_redirect('https://' . $name . '.' . $url . 'wp-admin' ); 
     exit;
 }
 
 
+//because of weird issue admin emails not switching on opened site (can't duplicate locally)
+function update_email_address($url){
+    $current_user = wp_get_current_user();
+    $email = $current_user->user_email;
+    $blog_id = get_blog_id_from_url($url, '/');
+    switch_to_blog( $blog_id );
+    update_option('admin_email', $email);
+    restore_current_blog();
+}
 
 //add created sites to cloner post type
 add_action( 'gform_after_submission_' . $form_id, 'gform_new_site_to_acf', 10, 2 );//specific to the gravity form id
 
 function gform_new_site_to_acf($entry, $form){
+    $clone_form_id = (int)rgar( $entry, '1');
     $form_title = rgar( $entry, '2' );
     $form_url = rgar( $entry, '3' );
-    $clone_form_id = (int)rgar( $entry, '1');
    
      $posts = get_posts( 'numberposts=99&post_status=publish&post_type=clone' ); 
         foreach ( $posts as $post ) {
@@ -110,12 +141,19 @@ function gform_new_site_to_acf($entry, $form){
 
     $row = array(
         'name'   => $form_title,
-        'url'  =>  $base_url . '/' .$form_url,// need to change if not sub domain
+        'url'  =>  opened_cloner_url($form_url),// need to change if not sub domain
         'description' => '',
         'display' => 'False'
     );
 
     $i = add_row('examples', $row, $post_id);
+}
+
+function opened_cloner_url($name){
+    $base_url = network_site_url();
+    $protocols = array('http://', 'https://', 'http://www.', 'www.');
+    $url =  str_replace($protocols, '', $base_url);
+    return 'https://' . $name . '.' . $url;
 }
 
 //GRAVITY FORM PROVISIONING BASED ON CLONE POSTS https://docs.gravityforms.com/gform_pre_render/#1-populate-choices
