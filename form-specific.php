@@ -104,11 +104,15 @@ function opened_cloner_redirect($name){
 
 //because of weird issue admin emails not switching on opened site (can't duplicate locally)
 function update_email_address($url){
+    write_log($url);
     $current_user = wp_get_current_user();
+    write_log($current_user);
     $email = $current_user->user_email;
+    write_log($email);
     $blog_id = get_blog_id_from_url($url, '/');
+    write_log($blog_id);
     switch_to_blog( $blog_id );
-    update_option('admin_email', $email);
+    write_log(update_option('admin_email', $email));
     restore_current_blog();
 }
 
@@ -183,7 +187,7 @@ function populate_posts( $form ) {
             $main = parse_url($url);//probably need to add a check for trailing slash
             $arg = array(
                 'domain' => $main['host'],
-                'path' => $main['path']
+                'path' => '/',
             );
             $blog_details = get_blog_details($arg);
 
