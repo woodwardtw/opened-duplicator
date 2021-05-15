@@ -25,7 +25,7 @@ function gform_site_cloner($entry, $form){
       'do_copy_posts' =>  '1',
       'post_types_to_clone' => 'page',
       'post_types_to_clone' => 'post',
-      //'do_copy_users' => '0',
+      'do_copy_users' => '0',
       //'debug'          => 1 // optional: enables logs
   );
 
@@ -68,6 +68,7 @@ function gform_site_cloner($entry, $form){
     //add acf examples page items
 
     //REDIRECT TO THE CREATED SITE
+    gform_new_site_to_acf($entry, $form);
     opened_cloner_redirect(rgar( $entry, '3' ));
 
 }
@@ -96,7 +97,7 @@ function opened_cloner_redirect($name){
     $base_url = network_site_url();
     $protocols = array('http://', 'https://', 'http://www.', 'www.');
     $url =  str_replace($protocols, '', $base_url);
-    update_email_address('https://' . $name . '.' . $url);
+    update_email_address($name . '.' . $url );
     wp_redirect('https://' . $name . '.' . $url . 'wp-admin' ); 
     exit;
 }
@@ -104,20 +105,37 @@ function opened_cloner_redirect($name){
 
 //because of weird issue admin emails not switching on opened site (can't duplicate locally)
 function update_email_address($url){
-    write_log($url);
-    $current_user = wp_get_current_user();
-    write_log($current_user);
-    $email = $current_user->user_email;
-    write_log($email);
-    $blog_id = get_blog_id_from_url($url, '/');
-    write_log($blog_id);
-    switch_to_blog( $blog_id );
-    write_log(update_option('admin_email', $email));
-    restore_current_blog();
+
+remove_action( 'add_option_new_admin_email', 'update_option_new_admin_email' );
+remove_action( 'update_option_new_admin_email', 'update_option_new_admin_email' );
+ /**
+ * Disable the confirmation notices when an administrator
+ * changes their email address.
+ *
+ * @see http://codex.wordpress.com/Function_Reference/update_option_new_admin_email
+ */
+function wpdocs_update_option_new_admin_email( $old_value, $value ) {
+ 
+        $current_user = wp_get_current_user();
+        $email = $current_user->user_email;
+        $blog_id = get_blog_id_from_url($url);
+        write_log('blog id = ' . $blog_id);
+        switch_to_blog( $blog_id );
+        update_option('admin_email', $email);
+        restore_current_blog();
+    }
+
+add_action( 'add_option_new_admin_email', 'wpdocs_update_option_new_admin_email', 10, 2 );
+add_action( 'update_option_new_admin_email', 'wpdocs_update_option_new_admin_email', 10, 2 );
+   
+   
 }
 
+
+
+
 //add created sites to cloner post type
-add_action( 'gform_after_submission_' . $form_id, 'gform_new_site_to_acf', 10, 2 );//specific to the gravity form id
+//add_action( 'gform_after_submission_' . $form_id, 'gform_new_site_to_acf', 10, 2 );//specific to the gravity form id
 
 function gform_new_site_to_acf($entry, $form){
     $clone_form_id = (int)rgar( $entry, '1');
@@ -130,12 +148,11 @@ function gform_new_site_to_acf($entry, $form){
             $main = parse_url($url);//probably need to add a check for trailing slash
             $arg = array(
                 'domain' => $main['host'],
-                'path' => $main['path']
+                //'path' => $main['path']
             );
             $blog_details = get_blog_details($arg);
 
             $clone_id = (int)$blog_details->blog_id;  
-
             if ($clone_id === $clone_form_id){
                 $post_id = $post->ID;
             }

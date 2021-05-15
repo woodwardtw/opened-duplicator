@@ -45,7 +45,8 @@ function build_site_clone_area($content){
     if ($post->post_type === 'clone'){
        $button = clone_button_maker(); 
        $clone_examples = clone_finder(); 
-        return $content . $button . $clone_examples;
+       $modal = make_modal(); 
+        return $content . $button . $clone_examples . $modal;
     }
     else {
         return $content;
@@ -69,7 +70,7 @@ function clone_button_maker(){
     return '<button class="dup-button">Clone it to own it!</button>' . $form_html;
 }
 
-//auto fill the gravity form field with the dynamic field population set to 'site_id'
+//auto fill the gravity form field with the dynamic field population set to 'site_id' ***deprecated
 add_filter( 'gform_field_value_site_id', 'set_the_clone_id' );
 function set_the_clone_id() {
     global $post;
@@ -82,4 +83,34 @@ function set_the_clone_id() {
     $blog_details = get_blog_details($arg);
     $site_id = $blog_details->blog_id;   
     return $site_id;
+}
+
+//MODAL MAKER
+function make_modal(){
+   return '<div id="cloneModal" class="modal">
+
+      <!-- Modal content -->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Cloning in process . . . </h2>
+        </div>
+        <div class="modal-body">
+            <div class="half">
+              <p>This make take some time.</p> 
+              <p>Please be patient & leave this window be.<br>
+                You will be taken to your new dashboard when the process is complete.<br>
+                I think you\'ll agree that cloning is pretty neat.</p>
+            </div>
+            <div class="half chicken">
+              <svg version="1.1" id="L3" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+                <circle fill="none" stroke="#424242" stroke-width="4" cx="50" cy="50" r="44" style="opacity:0.5;"></circle>
+                  <circle fill="#424242" stroke="#424242" stroke-width="3" cx="8" cy="54" r="6">
+                    <animateTransform attributeName="transform" dur="3.5s" type="rotate" from="0 50 48" to="360 50 52" repeatCount="indefinite"></animateTransform>
+                    
+                  </circle>
+                </svg>
+            </div>
+        </div>      
+      </div>
+</div>';
 }
