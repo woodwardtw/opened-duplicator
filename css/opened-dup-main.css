@@ -33,9 +33,15 @@
 	border: 0	;
 }
 
+/*hide and show form on clone page*/
+
+#clone-trooper {
+	display: none;
+}
+
 /*modal css*/
 .modal {
- /* display: none; */
+  display: none; 
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
   left: 0;

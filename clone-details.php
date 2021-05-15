@@ -66,8 +66,8 @@ function clone_button_maker(){
     $form_id = get_field( 'cloner_form','options');
     //$clone_page_slug = $clone_page->post_name;
     //var_dump($clone_page_slug);
-    $form_html = '[gravityform id="'. $form_id . '" title="false" description="false"]';
-    return '<button class="dup-button">Clone it to own it!</button>' . $form_html;
+    $form_html = '<div id="clone-trooper">[gravityform id="'. $form_id . '" title="false" description="false"]</div>';
+    return '<button class="dup-button" id="clone-desired">Clone it to own it!</button>' . $form_html;
 }
 
 //auto fill the gravity form field with the dynamic field population set to 'site_id' ***deprecated

@@ -1,6 +1,7 @@
 createUrlDiv();
 document.getElementsByName("input_3")[0].addEventListener("blur", textSuccess);
 modalDupMessage();
+cloneDesired();
 
 //from https://stackoverflow.com/questions/44933411/allow-only-letters-numbers-and-hyphen-in-input 
 //document.getElementById("input_1_3").addEventListener("input", function(e) {
@@ -60,5 +61,14 @@ function modalDupMessage(){
   const button = document.querySelectorAll('.gform_button')[0]
   button.onclick = function() {
     modal.style.display = "block";
+  }
+}
+
+function cloneDesired(){
+  const cloneArea = document.getElementById('clone-trooper')
+  const button = document.getElementById('clone-desired')
+  button.onclick = function() {
+    cloneArea.style.display = "block";
+    jQuery(".gform_fields li:nth-child(2) input").focus();
   }
 }
